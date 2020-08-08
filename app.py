@@ -74,28 +74,24 @@ def run_crawler():
                 "title": "Consumer Market Links",
                 "r_type": "15000000",
                 "i_type": "consumer-electronics",
-                # "areas": areas,
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             },
             {
                 "title": "Digital Market Links",
                 "r_type": "251",
                 "i_type": "consumer-electronics",
-                # "areas": areas,
                 'fields': ["revenue", "revenue_yoy", "users", "users_yoy", "cagr", "user_penetration", "arpu"]
             },
             {
                 "title": "Mobile",
                 "r_type": "15020100",
                 "i_type": "mobile-phones",
-                # "areas": areas,
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             },
             {
                 "title": "Laptop & Tablets",
                 "r_type": "15030100",
                 "i_type": "laptops-tablets",
-                # "areas": areas,
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             }
         ],
@@ -104,14 +100,12 @@ def run_crawler():
                 "title": "Vitamin & Minerals",
                 "r_type": "18050000",
                 "i_type": "vitamins-minerals",
-                # "areas": areas,
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             },
             {
                 "title": "Personal Care",
                 "r_type": "254",
                 "i_type": "personal-care",
-                # "areas": areas,
                 'fields': ["revenue", "revenue_yoy", "users", "users_yoy", "cagr", "user_penetration", "arpu"]
             }
         ]
