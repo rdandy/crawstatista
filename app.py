@@ -4,8 +4,10 @@ from flask import Flask
 from datetime import datetime
 import random
 import time
-
 from core.crawler import Crawler
+from openpyxl import Workbook
+from core.browsers import SLEEP_SECOND
+
 
 app = Flask(__name__)
 # app.config.from_object(DevConfig)
@@ -74,24 +76,29 @@ def run_crawler():
                 "title": "Consumer Market Links",
                 "r_type": "15000000",
                 "i_type": "consumer-electronics",
+                "labels": ["Revenue (2020), mln USD", "yoy", "ARPC, $", "CAGR"],
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             },
             {
                 "title": "Digital Market Links",
                 "r_type": "251",
                 "i_type": "consumer-electronics",
+                "labels": ["Revenue (2020), mln USD", "yoy", "Users, mln", "Users yoy", "CAGR", "Users Penetration %",
+                           "ARPU"],
                 'fields': ["revenue", "revenue_yoy", "users", "users_yoy", "cagr", "user_penetration", "arpu"]
             },
             {
                 "title": "Mobile",
                 "r_type": "15020100",
                 "i_type": "mobile-phones",
+                "labels": ["Revenue", "%", "ARPC, $", "CAGR"],
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             },
             {
                 "title": "Laptop & Tablets",
                 "r_type": "15030100",
                 "i_type": "laptops-tablets",
+                "labels": ["Revenue", "%", "ARPC, $", "CAGR"],
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             }
         ],
@@ -100,44 +107,82 @@ def run_crawler():
                 "title": "Vitamin & Minerals",
                 "r_type": "18050000",
                 "i_type": "vitamins-minerals",
+                "labels": ["Revenue (2020), mln USD", "Revenue yoy", "ARPC", "CAGR"],
                 'fields': ["revenue", "revenue_yoy", "arpc", "cagr"]
             },
             {
                 "title": "Personal Care",
                 "r_type": "254",
                 "i_type": "personal-care",
+                "labels": ["Revenue (2020), mln USD", "Revenue yoy", "Users, mln", "Users yoy", "CAGR",
+                           "Users Penetration %", "ARPU"],
                 'fields': ["revenue", "revenue_yoy", "users", "users_yoy", "cagr", "user_penetration", "arpu"]
             }
         ]
     }
 
+    sheet_index = -1
+    wb = Workbook()
     for tab_title in tab.keys():
         print(tab_title)
-        for data_group in tab[tab_title]:
-            print('\t{}\t{}\t{}\t{}'.format(data_group['title'], data_group['r_type'], data_group['i_type'], data_group['fields']))
-            i = 0
+        # create sheet
+        sheet_index += 1
+        ws = wb.create_sheet(tab_title, sheet_index)
+        # ws.cell(row=4, column=2, value=10)
+        # ws.cell(column=col, row=row, value="{0}".format(get_column_letter(col)))
+        cols_index = 1
+        for data_group_id in range(len(tab[tab_title])):
+            data_group = tab[tab_title][data_group_id]
+            row_id = 1
+
+            # print('\t{}\t{}\t{}\t{}'.format(data_group['title'], data_group['r_type'], data_group['i_type'],
+            #                                 data_group['fields']))
+
+            if data_group_id == 0:
+                cols = ["Area", "Subregion", "Country"] + [data_group['title']] + data_group['labels']
+                col_start = 1
+            else:
+                cols = [data_group['title']] + data_group['labels']
+
+            for c in range(len(cols)):
+                _ = ws.cell(row=row_id, column=col_start+c, value="{}".format(cols[c]))
+
             for area in areas:
-                if i > 2:
-                    break
-                i += 1
+                row_id += 1
                 url = "https://www.statista.com/outlook/{}/{}/{}/{}".format(data_group['r_type'],
                                                                             area[3],
                                                                             data_group['i_type'],
                                                                             area[4])
-                print("\t\t{}".format(url))
 
+                # _ = ws.cell(row=row_id, column=cols_count, value="{}".format(cols[c]))
+                # print("\t\t{}".format(url))
                 crawler = Crawler(url)
                 d = crawler.data()
-                c = ""
-                for f in data_group['fields']:
-                    c = "{}\t{}-{}".format(c, f, d[f])
+                if data_group_id == 0:
+                    row_data = [area[0], area[1], area[2], url]
+                else:
+                    row_data = [url]
 
-                print("\t\t\t{}".format(c))
-                print("*************** sleep 0.3 second ***************")
-                time.sleep(0.3)
+                for f in data_group['fields']:
+                    row_data.append(d[f])
+                    # c = "{}\t{}-{}".format(c, f, d[f])
+
+                for c in range(len(row_data)):
+                    _ = ws.cell(row=row_id, column=col_start+c, value="{}".format(row_data[c]))
+
+                print(row_data)
+
+                sl = random.choice(SLEEP_SECOND)
+                print("*************** sleep {} second ***************".format(sl))
+                # if row_id >= 5:
+                #     break
+
+                time.sleep(sl)
+            col_start += len(cols)
+
+    wb.save(filename="/tmp/statista.xlsx")
 
 
 if __name__ == "__main__":
     # app.run(threaded=True)
-
     run_crawler()
