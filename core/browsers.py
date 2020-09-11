@@ -261,4 +261,5 @@ XPATH_HIGHLIGHT_LI = '//*[@id="xmoInfoTabs"]/div/div[2]/div[1]/div[1]/div[1]/ul/
 XPATH_USERS = '//*[@id="xmoQuickFacts"]/div[2]/div[2]'
 XPATH_USERS_YOY = '//*[@id="xmoQuickFacts"]/div[2]/div[1]/div[2]'
 
-SLEEP_SECOND = [0.4, 0.6, 0.9, 1.0]
+# SLEEP_SECOND = [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.6, 0.6, 0.6, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.7, 0.7, 0.7, 0.7]
+SLEEP_SECOND = [0.1, 0.2, 0.3, 0.4]

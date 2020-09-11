@@ -33,13 +33,13 @@ class Crawler(object):
 
     def arpc(self):
         l = self.s.xpath(XPATH_ARPC)
-        if len(l) > 0 and "$" in l[0].text:
+        if len(l) > 0 and l[0].text is not None and "$" in l[0].text:
             return l[0].text.split("$")[1].strip()
         return None
 
     def arpc_yoy(self):
         l = self.s.xpath(XPATH_ARPC_YOY)
-        if len(l) > 0 and "%" in l[0].text:
+        if len(l) > 0 and l[0].text is not None and "%" in l[0].text:
             return l[0].text.split('%')[0].strip()
         return None
 
@@ -77,13 +77,13 @@ class Crawler(object):
 
     def users(self):
         l = self.s.xpath(XPATH_USERS)
-        if len(l) > 0 and "m" in l[0].text.lower():
+        if len(l) > 0 and l[0].text is not None and "m" in l[0].text.lower():
             return l[0].text.lower().split("m")[0].replace(",", "").strip()
         return None
 
     def users_yoy(self):
         l = self.s.xpath(XPATH_USERS_YOY)
-        if len(l) > 0 and "%" in l[0].text:
+        if len(l) > 0 and l[0].text is not None and "%" in l[0].text:
             return l[0].text.split('%')[0].strip()
         return None
 
