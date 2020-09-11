@@ -2,7 +2,6 @@
 import random
 import re
 
-from bs4 import BeautifulSoup
 from lxml import etree
 
 import requests
